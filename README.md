@@ -1,89 +1,87 @@
-# AI From Scratch
+# 🧠 AI From Scratch
 
-From-scratch character-level transformer language model and agent using only **Python 3.10+**, **NumPy**, and the standard library. No PyTorch, TensorFlow, JAX, or agent frameworks.
+> *No frameworks. No shortcuts. Just NumPy and a lot of matrix multiplication.*
+
+Build a **transformer language model** and a **conversational agent** from the ground up—using only **Python 3.10+**, **NumPy**, and the standard library. No PyTorch. No TensorFlow. No JAX. No LangChain. Just you, backprop, and a corpus.
 
 ---
 
-## Setup
+## ⚡ Get Going
 
-### Install the package
+### 1. Install
 
 ```bash
 pip install -e .
 ```
 
-### Reinstall weights and JSON files
+### 2. Bring Back the Weights & JSON
 
-If you have deleted `model_weights.npz` and the vocab/config JSON files, regenerate them with:
+Deleted `model_weights.npz` or the vocab/config JSONs? No sweat. Regenerate everything with one command:
 
 ```bash
 python setup.py install_artifacts
 ```
 
-This runs `train.py` and creates:
+This fires up `train.py` and writes:
 
-- `model_weights.npz` — model parameters  
-- `model_config.json` — model architecture config  
-- `vocab.json` — character vocabulary  
+| File | What it is |
+|------|------------|
+| `model_weights.npz` | The model’s learned parameters |
+| `model_config.json` | Architecture (d_model, layers, etc.) |
+| `vocab.json` | Character vocabulary |
 
-Training uses `corpus.txt` in the project root (or a built-in tiny corpus if the file is missing).
+Training reads from `corpus.txt` in the project root—or uses a tiny built-in corpus if the file’s missing.
 
-For the full v2 pipeline (multi-stage tokenization and vocabs), run after `install_artifacts`:
+**Want the full v2 pipeline?** (char → word → sentence → BPE) After `install_artifacts`, run:
 
 ```bash
 python train_v2.py
 ```
 
-That produces `vocab_v2.json`, `vocab_char.json`, `vocab_word.json`, `vocab_sentence.json`, `vocab_bpe.json`, and `bpe_merges.json`.
+You’ll get `vocab_v2.json`, stage vocabs (`vocab_char`, `vocab_word`, `vocab_sentence`, `vocab_bpe`), and `bpe_merges.json`.
 
 ---
 
-## Project layout
+## 📁 What’s in the Box
 
-- **`core/`** — tokenizer, embeddings, attention, transformer block, activations, loss  
-- **`memory/`** — short-term (rolling buffer) and long-term (vector store)  
-- **`agent/`** — planner and agent loop  
-- **`tools/`** — sandboxed command tool  
-- **`model.py`** — language model  
-- **`train.py`** — character-level training  
-- **`train_v2.py`** — multi-stage (char → word → sentence → BPE) training  
-- **`generate.py`** — text generation  
-- **`run_agent.py`** — interactive agent  
-
----
-
-## Quick start
-
-1. **Train** (creates weights and JSON if missing):
-
-   ```bash
-   python train.py
-   ```
-
-2. **Generate text**:
-
-   ```bash
-   python generate.py
-   ```
-
-3. **Run the agent**:
-
-   ```bash
-   python run_agent.py
-   ```
+```
+core/          → tokenizer, embeddings, attention, transformer blocks, loss
+memory/        → short-term buffer + long-term vector store
+agent/         → planner + agent loop
+tools/         → sandboxed command tool (list_files, read_file)
+model.py       → the language model
+train.py       → character-level training
+train_v2.py    → multi-stage (char → word → sentence → BPE) training
+generate.py    → text generation
+run_agent.py   → interactive agent
+```
 
 ---
 
-## Core components
+## 🚀 Three Commands to Rule Them All
 
-- **Tokenizer** (`core/tokenizer.py`) — character-level vocab; `encode` / `decode` reversible; index 0 reserved for `<pad>`.  
-- **Model** (`model.py`) — `ModelConfig` + `LanguageModel` (embeddings, transformer blocks, LayerNorm, linear head); manual `backward`, `zero_grad`, `step`; `state_dict` / `load_state_dict`.  
-- **Training** (`train.py`) — loads corpus, builds vocab, runs SGD on cross-entropy; saves `model_weights.npz`, `model_config.json`, `vocab.json`.  
-- **Generation** (`generate.py`) — loads config, weights, and vocab; autoregressive sampling with temperature and sliding context.  
-- **Agent** (`run_agent.py`) — short-term + long-term memory, planner, optional tool calls (`tool:list_files`, `tool:read_file`).  
+| Step | Command | What happens |
+|------|---------|----------------|
+| **Train** | `python train.py` | Trains on corpus, writes weights + config + vocab (or continues from existing). |
+| **Generate** | `python generate.py` | Loads the model and samples text. |
+| **Chat** | `python run_agent.py` | Starts the agent: memory, tools, and generated replies. |
 
 ---
 
-## Zero-knowledge disclaimer
+## 🔧 Under the Hood
 
-The model is trained only on the provided corpus and has **no factual knowledge** beyond character-level statistics. Do not treat it as a source of facts.
+- **Tokenizer** — Character-level vocab; reversible encode/decode; `<pad>` at id 0.
+- **Model** — Embeddings → transformer blocks → LayerNorm → linear head. Manual `backward`, `zero_grad`, `step`, plus `state_dict` / `load_state_dict`.
+- **Training** — Corpus → vocab → SGD on cross-entropy → save weights, config, vocab.
+- **Generation** — Autoregressive sampling with temperature and a sliding context window.
+- **Agent** — Short-term + long-term memory, a planner, and optional tools: `tool:list_files`, `tool:read_file`.
+
+---
+
+## ⚠️ The Fine Print
+
+This model is **zero-knowledge**. It learns only from the corpus you give it—character-level statistics, not facts about the world. Treat any “knowledge” it seems to have as statistical pattern, not truth.
+
+---
+
+*Built from scratch. Run from the command line. Understand every line.*
